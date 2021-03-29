@@ -1,14 +1,56 @@
 # SFND 3D Object Tracking
 
-Welcome to the final project of the camera course. By completing all the lessons, you now have a solid understanding of keypoint detectors, descriptors, and methods to match them between successive images. Also, you know how to detect objects in an image using the YOLO deep-learning framework. And finally, you know how to associate regions in a camera image with Lidar points in 3D space. Let's take a look at our program schematic to see what we already have accomplished and what's still missing.
+## Code Architecture
+<img src="https://github.com/anaskhan496/Sensor-Fusion-Cpp/blob/main/3D-Object-Tracking/images/Code-Architecture.PNG" width="1100" height="400" />
 
-<img src="images/course_code_structure.png" width="779" height="414" />
+## Keypoint detectors, descriptors, and methods to match them between successive images 
+<img src="https://github.com/anaskhan496/Sensor-Fusion-Cpp/blob/main/3D-Object-Tracking/images/keypoint_matching.png" width="1300" height="200" />
 
-In this final project, you will implement the missing parts in the schematic. To do this, you will complete four major tasks: 
-1. First, you will develop a way to match 3D objects over time by using keypoint correspondences. 
-2. Second, you will compute the TTC based on Lidar measurements. 
-3. You will then proceed to do the same using the camera, which requires to first associate keypoint matches to regions of interest and then to compute the TTC based on those matches. 
-4. And lastly, you will conduct various tests with the framework. Your goal is to identify the most suitable detector/descriptor combination for TTC estimation and also to search for problems that can lead to faulty measurements by the camera or Lidar sensor. In the last course of this Nanodegree, you will learn about the Kalman filter, which is a great way to combine the two independent TTC measurements into an improved version which is much more reliable than a single sensor alone can be. But before we think about such things, let us focus on your final project in the camera course. 
+## Estimating Time-to-Collision Using Camera Sensor
+- Idea: Compute Keypoint matches between successive images and observe the relative distances between them over time.
+- Problem: Keypoints need to be isolated on the objects. i.e exclude road surface and static objects.
+
+## Estimating Time-to-Collision Using Lidar Sensor
+- Compute distance to objects from successive lidar measurements
+- Problem: Crop lidar points to only include necessary objects. Cropping not reliable as objects may not directly be in front of the sensor
+
+## Load Lidar Point Cloud
+- Removed ground plane from lidar point cloud
+- Changed the color of the Lidar points such that X=0.0m corresponds to red while X=20.0m is shown as green with a gradual transition in between
+<img src="https://github.com/anaskhan496/Sensor-Fusion-Cpp/blob/main/3D-Object-Tracking/images/Lidar_top_view.png" width="800" height="550" />
+
+## YOLO V3 Object Detection
+- Initialize the parameters (nmsThreshold and confThreshold)
+- Prepare the model (weights, cfg file, and load neural net)
+- Generate 4D blob from image (number N x channel C x height H x width W)
+- Run forward pass through the network
+- Scan boxes and filter based on confThreshold
+- Post process neural net to perform Non-Maximum Suppression
+<img src="https://github.com/anaskhan496/Sensor-Fusion-Cpp/blob/main/3D-Object-Tracking/images/Yolo1.png" width="1300" height="200" />
+<img src="https://github.com/anaskhan496/Sensor-Fusion-Cpp/blob/main/3D-Object-Tracking/images/Yolo.png" width="700" height="275" />
+
+## Cluster Lidar Points with 2D Detection Region-of-Interest
+- Conversion of Lidar points from Euclidean to Homogeneous co-ordinates.
+- P_rect_00 – Intrinsic Camera Matrix. Camera-to-Image Co-ordinates
+- R_rect_00 – Rectifying rotation to make images co-planar (Required for stereo camera setup used in KITTI dataset)
+- (R|T)_velo_to_cam - Extrinsic camera matrix. Transform world frame/lidar frame to camera co-ordinate frame
+- Transformation Equation - Y = P_rect_xx * R_rect_00 * (R|T)_velo_to_cam * X, X is the lidar points in homogeneous co-ordinates
+
+## Cluster Lidar Points with 2D Detection Region-of-Interest : Issues
+- Object detection returns ROI that are too large and thus overlap into parts of the scene that are not a part of the enclosed object.
+- Strictly rectangular shape of bounding boxes. Rarely fits the physical outline of the enclosed objects and can overlap with other objects in the scene. Poses a problem during Lidar point cloud association.
+
+## Match 3D Objects
+- Extract keypoints between current and previous frame and associate keypoint matches to regions of interest
+- Associate a given bounding box with the keypoints it contains
+- Find by which bounding boxes keypoints are enclosed in these frames. Store the matched candidates box id.
+- Associate bounding boxes with highest occurrences
+<img src="https://github.com/anaskhan496/Sensor-Fusion-Cpp/blob/main/3D-Object-Tracking/images/3d_objects_info.png" width="989" height="600" />
+
+## Estimate Time-to-Collision Using Camera and Lidar Sensors
+<img src="https://github.com/anaskhan496/Sensor-Fusion-Cpp/blob/main/3D-Object-Tracking/images/ttc_final.png" width="1200" height="300" />
+
+
 
 ## Dependencies for Running Locally
 * cmake >= 2.8
