@@ -14,9 +14,9 @@ Lidar, Camera, Radar Sensor Projects in C++
 
 ## Sensor Fusion | 3D Object Tracking
 - [x] Implemented a method called "matchBoundingBoxes", which takes as input both the previous and the current data frames and outputs the ids of the matched regions of interest (i.e. the boxID property). Each bounding box was assigned the matches with the highest number of keypoint correspondences.
-- [x] Computed the time-to-collision in second for all matched 3D objects using only Lidar measurements from the matched bounding boxes between current and previous frame.
-- [x] Prepare the TTC computation based on camera measurements by associating keypoint correspondences to the bounding boxes which enclose them. All matches which satisfy this condition must be added to a vector in the respective bounding box.
-- [x] Compute the time-to-collision in second for all matched 3D objects using only keypoint correspondences from the matched bounding boxes between current and previous frame.
+- [x] Computed the time-to-collision in seconds for all matched 3D objects using only Lidar measurements from the matched bounding boxes between current and previous frame.
+- [x] Prepared the TTC computation based on camera measurements by associating keypoint correspondences to the bounding boxes which enclose them. All matches that satisfied this condition were added to a vector in the respective bounding box.
+- [x] Computed the time-to-collision in second for all matched 3D objects using only keypoint correspondences from the matched bounding boxes between current and previous frame.
 
 <p float="left">
   <img src="https://github.com/anaskhan496/Sensor-Fusion-Cpp/blob/main/3D-Object-Tracking/images/3D_tracking.gif" width="1100" />
