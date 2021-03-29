@@ -1,4 +1,4 @@
-# SFND 3D Object Tracking
+# Sensor Fusion | 3D Object Tracking
 
 ## Code Architecture
 <img src="https://github.com/anaskhan496/Sensor-Fusion-Cpp/blob/main/3D-Object-Tracking/images/Code-Architecture.PNG" width="1100" height="400" />
@@ -49,7 +49,6 @@
 
 ## Estimate Time-to-Collision Using Camera and Lidar Sensors
 <img src="https://github.com/anaskhan496/Sensor-Fusion-Cpp/blob/main/3D-Object-Tracking/images/ttc_final.png" width="1200" height="300" />
-
 
 
 ## Dependencies for Running Locally
